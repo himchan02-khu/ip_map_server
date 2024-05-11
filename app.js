@@ -17,7 +17,7 @@ app.get('/search', async (req, res) => {
     try {
         const query = url.parse(req.url, true).query;
         console.log('query:', query);
-        const response = await axios.get(ipinfo(query.ip));
+        const response = await ipinfo(query.ip);
         // const info = await Promise.all(
         //     response.data.map(async (item) => {
         //         ip: item.ip;
@@ -28,15 +28,16 @@ app.get('/search', async (req, res) => {
         //     })
         // )
         console.log('res:', response);
+        return res.json(response);
     } catch (error) {
         console.log(error);
-        throw error;
+        throw Error(error);
     }
 });
 
 async function ipinfo(IPaddress) {
     try {
-        const response = await axios.get("ipinfo.io/"
+        const response = await axios.get("https://ipinfo.io/"
             + IPaddress
             + "?token="
             + token);
@@ -52,6 +53,7 @@ async function ipinfo(IPaddress) {
         const time = info?.timezone;
         const resposedata = { ip, city, region, country, address, telecom, postal, time };
         console.log(resposedata);
+        return resposedata;
     }
     catch (error) {
         console.log("ip주소 에러",error);
