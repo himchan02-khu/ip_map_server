@@ -4,8 +4,8 @@ const app = express();
 const port = 4242;
 const token = "0d72321f5ba3d2";
 const url = require("url");
-const http = require("http");
-const {router} = require("express/lib/application");
+// const http = require("http");
+// const {router} = require("express/lib/application");
 
 
 app.listen(port, () => {
@@ -16,7 +16,6 @@ app.listen(port, () => {
 app.get('/search', async (req, res) => {
     try {
         const query = url.parse(req.url, true).query;
-        console.log('query:', query);
         const response = await ipinfo(query.ip);
         // const info = await Promise.all(
         //     response.data.map(async (item) => {
@@ -27,13 +26,28 @@ app.get('/search', async (req, res) => {
         //
         //     })
         // )
-        console.log('res:', response);
+        if (response.ip == null)
+            return res.status(404).send("No ip found.");
         return res.json(response);
     } catch (error) {
         console.log(error);
-        throw Error(error);
+        return res.status(404).send("Not Found");
     }
 });
+
+// app.get('/myip', async (req, res) => {
+//     try {
+//         const response = await axios.get("https://api.ip.pe.kr/json");
+//         const ip = response?.ip;
+//         const responsedata = {ip};
+//         console.log(`MyIP: ${ip}`);
+//         return res.json(responsedata);
+//     }
+//     catch (error) {
+//         console.log(error);
+//         return res.status(500).json({ error: 'Internal server error' });
+//     }
+// })
 
 async function ipinfo(IPaddress) {
     try {
@@ -41,7 +55,6 @@ async function ipinfo(IPaddress) {
             + IPaddress
             + "?token="
             + token);
-        console.log('ipinfo-res : !!!!!!!!!!!!!!!!!!!', response);
         const info = response?.data;
         const ip = info?.ip;
         const city = info?.city;
@@ -57,7 +70,7 @@ async function ipinfo(IPaddress) {
     }
     catch (error) {
         console.log("ip주소 에러",error);
-        throw error;
+        return {};
     }
 }
 //
