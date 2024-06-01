@@ -11,6 +11,7 @@ const url = require("url");
 app.listen(port, () => {
     console.log(`root : http://localhost:${port}`);
     console.log(`Server is running at http://localhost:${port}`);
+    console.log(`How to IP info search: http://localhost:${port}/search?ip={IPaddress}`);
 });
 // Login page route
 app.get('/search', async (req, res) => {
@@ -34,14 +35,14 @@ app.get('/search', async (req, res) => {
         return res.status(404).send("Not Found");
     }
 });
-
+//
 // app.get('/myip', async (req, res) => {
 //     try {
 //         const response = await axios.get("https://api.ip.pe.kr/json");
-//         const ip = response?.ip;
-//         const responsedata = {ip};
-//         console.log(`MyIP: ${ip}`);
-//         return res.json(responsedata);
+//         if (response.ip != null)
+//             return res.status(200).send(response.json);
+//         else
+//             return {};
 //     }
 //     catch (error) {
 //         console.log(error);
@@ -54,17 +55,17 @@ async function ipinfo(IPaddress) {
         const response = await axios.get("https://ipinfo.io/"
             + IPaddress
             + "?token="
-            + token);
+            + token); //https://ipinfo.io/[IP Address]?token=token
         const info = response?.data;
         const ip = info?.ip;
         const city = info?.city;
         const region = info?.region;
         const country = info?.country;
-        const address = info?.loc;
+        const locate = info?.loc;
         const telecom = info?.org;
         const postal = info?.postal;
         const time = info?.timezone;
-        const resposedata = { ip, city, region, country, address, telecom, postal, time };
+        const resposedata = { ip, city, region, country, locate, telecom, postal, time };
         console.log(resposedata);
         return resposedata;
     }
